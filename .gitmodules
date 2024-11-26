@@ -1,6 +1,4 @@
-[submodule "src/third_party/portaudio"]
-	path = src/third_party/portaudio
-	url = https://github.com/PortAudio/portaudio.git
-[submodule "src/third_party/liquid-dsp"]
-	path = src/third_party/liquid-dsp
-	url = https://github.com/jgaeddert/liquid-dsp.git
+
+[submodule "src/portaudio"]
+	path = src/portaudio
+	url = git@github.com:PortAudio/portaudio.git

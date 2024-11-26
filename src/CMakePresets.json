@@ -1,0 +1,30 @@
+{
+    "version": 3,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 21,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "reverb-debug",
+            "hidden": false,
+            "binaryDir": "../build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_TOOLCHAIN_FILE": {
+                    "type": "FILEPATH",
+                    "value": "toolchains/arm-toolchain.cmake"
+                }
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "build-reverb-debug",
+            "hidden": false,
+            "configurePreset": "reverb-debug",
+            "displayName": "build-reverb-debug"
+        }
+    ]
+}
