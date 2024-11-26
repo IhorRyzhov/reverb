@@ -1,0 +1,11 @@
+{
+    "cmake.useCMakePresets": "always",
+    "cmake.sourceDirectory": "/home/ihor/workspace/reverb/src/CMakeLists.txt",
+    "cmake.configureOnOpen": true,
+    "cortex-debug.armToolchainPrefix": "aarch64-none-linux-gnu-gcc",
+    "cortex-debug.armToolchainPath": "/home/ihor/sw/arm-gnu-toolchain-13.3.rel1-x86_64-aarch64-none-linux-gnu/bin"    
+}
+
+
+
+

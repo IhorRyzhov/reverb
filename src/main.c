@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include "input-output-device/input-output-device.h"
+//#include "input-output-device/input-output-device.h"
 
-int callback(
+/*int callback(
     const void *input, void *output,
     unsigned long frameCount,
     const PaStreamCallbackTimeInfo* timeInfo,
@@ -11,18 +11,18 @@ int callback(
 
 
 	return 0;
-}
+}*/
 
 int main(void)
 {
-	inputOutputDevice_initDevice(callback);
+	/*inputOutputDevice_initDevice(callback);
 
 	inputOutputDevice_startOutputDevice();
 
 	while(1)
 	{
 
-	}
+	}*/
 
 	printf("Hello world");
 
