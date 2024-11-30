@@ -1,3 +1,0 @@
-set sysroot
-set architecture arm
-handle all nostop noprint
