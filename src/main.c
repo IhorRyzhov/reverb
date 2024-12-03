@@ -1,6 +1,6 @@
 /** 
  * @file main.c
- * @brief Play a sine wave for several seconds, pausing in the middle.
+ * @brief
 */
 #include <stdio.h>
 #include <math.h>

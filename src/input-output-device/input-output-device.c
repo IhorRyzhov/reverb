@@ -1,10 +1,3 @@
-/*
- * input-output-device.c
- *
- *  Created on: 13 июн. 2020 г.
- *      Author: ihor
- */
-
 #include <stdint.h>
 #include <stdio.h>
 #include "input-output-device.h"
@@ -35,7 +28,7 @@ void inputOutputDevice_initDevice(PaStreamCallback* objPL_streamCallback)
 		fprintf(stderr, "Error: No default output device.\n");
 	}
 
-	inputParameters.device = Pa_GetDefaultInputDevice(); /* default input device */
+	inputParameters.device = Pa_GetDefaultInputDevice();
 
 	if (inputParameters.device == paNoDevice)
 	{
