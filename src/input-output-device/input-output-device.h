@@ -1,10 +1,3 @@
-/*
- * input-output-device.h
- *
- *  Created on: 13 июн. 2020 г.
- *      Author: ihor
- */
-
 #ifndef INPUT_OUTPUT_DEVICE_INPUT_OUTPUT_DEVICE_H_
 #define INPUT_OUTPUT_DEVICE_INPUT_OUTPUT_DEVICE_H_
 
