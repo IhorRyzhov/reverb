@@ -2,7 +2,13 @@
     "cmake.useCMakePresets": "always",
     "cmake.sourceDirectory": "${workspaceFolder}/src",
     "cmake.configureOnOpen": true,
-    "C_Cpp.errorSquiggles": "disabled"
+    "C_Cpp.errorSquiggles": "disabled",
+      
+    "PROGRAM_REMOTE_PATH": "/home/pi/",
+    "PROGRAM_NAME": "reverb",
+    "SSH_REMOTE_TARGET": "pi@raspberry",
+    "REMOTE_TARGET_ADDRESS": "raspberry",
+    "GDB_PORT": 3333
 }
 
 

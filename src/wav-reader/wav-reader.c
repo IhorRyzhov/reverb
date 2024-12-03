@@ -3,67 +3,47 @@
 #include "wav-reader.h"
 
 struct WavHeader
-{
-    // WAV-формат начинается с RIFF-заголовка:
-
-    // Содержит символы "RIFF" в ASCII кодировке
-    // (0x52494646 в big-endian представлении)
+{ 
+    // 0x52494646, "RIFF" in ASCII format
     char cP_chunkId[4];
 
-    // 36 + subchunk2Size, или более точно:
-    // 4 + (8 + subchunk1Size) + (8 + subchunk2Size)
-    // Это оставшийся размер цепочки, начиная с этой позиции.
-    // Иначе говоря, это размер файла - 8, то есть,
-    // исключены поля chunkId и chunkSize.
+    /* 36 + subchunk2Size:
+    4 + (8 + subchunk1Size) + (8 + subchunk2Size),
+	without chunkId и chunkSize. */
     unsigned long u32_chunkSize;
 
-    // Содержит символы "WAVE"
-    // (0x57415645 в big-endian представлении)
+    // 0x57415645, "WAVE"
     char cP_format[4];
 
-    // Формат "WAVE" состоит из двух подцепочек: "fmt " и "data":
-    // Подцепочка "fmt " описывает формат звуковых данных:
-
-    // Содержит символы "fmt "
-    // (0x666d7420 в big-endian представлении)
+    // "fmt ", 0x666d7420
     char cP_subchunk1Id[4];
 
-    // 16 для формата PCM.
-    // Это оставшийся размер подцепочки, начиная с этой позиции.
+    // 16 PCM
     unsigned long u32_subchunk1Size;
 
-    // Аудио формат, полный список можно получить здесь http://audiocoding.ru/wav_formats.txt
-    // Для PCM = 1 (то есть, Линейное квантование).
-    // Значения, отличающиеся от 1, обозначают некоторый формат сжатия.
+    // PCM = 1, http://audiocoding.ru/wav_formats.txt
     unsigned short u16_audioFormat;
 
-    // Количество каналов. Моно = 1, Стерео = 2 и т.д.
+    // mono = 1, stereo = 2 etc.
     unsigned short u16_numChannels;
 
-    // Частота дискретизации. 8000 Гц, 44100 Гц и т.д.
+    // 8000 Hz, 44100 Hz etc.
     unsigned long u32_sampleRate;
 
-    // sampleRate * numChannels * bitsPerSample/8
+    // sampleRate * numChannels * bitsPerSample / 8
     unsigned long u32_byteRate;
 
-    // numChannels * bitsPerSample/8
-    // Количество байт для одного сэмпла, включая все каналы.
+    // numChannels * bitsPerSample / 8
     unsigned short u16_blockAlign;
 
-    // Так называемая "глубиная" или точность звучания. 8 бит, 16 бит и т.д.
+    // 8 bit, 16 bit etc.
     unsigned short u16_bitsPerSample;
 
-    // Подцепочка "data" содержит аудио-данные и их размер.
-
-    // Содержит символы "data"
-    // (0x64617461 в big-endian представлении)
+    // "data", 0x64617461
     char cP_subchunk2Id[4];
 
-    // numSamples * numChannels * bitsPerSample/8
-    // Количество байт в области данных.
+    // numSamples * numChannels * bitsPerSample / 8
     unsigned long u32_subchunk2Size;
-
-    // Далее следуют непосредственно Wav данные.
 };
 typedef struct WavHeader wavHeader_t;
 

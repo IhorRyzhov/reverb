@@ -2,11 +2,53 @@
     // See https://go.microsoft.com/fwlink/?LinkId=733558
     // for the documentation about the tasks.json format
     "version": "2.0.0",
-    "tasks": [
+    "tasks": 
+    [
       {
-        "label": "Send-binary",
+        "label": "send-binary",
         "type": "shell",
-        "command": "scp build/reverb-debug/reverb pi@raspberry:/home/pi"
+        "command": "scp build/reverb-debug/reverb ${config:SSH_REMOTE_TARGET}:${config:PROGRAM_REMOTE_PATH}",
+      },
+      {
+        "label": "gdbserver", // https://github.com/Ed-Yang/rpidebug
+        "type": "shell",
+        "command": "ssh -L ${config:GDB_PORT}:localhost:${config:GDB_PORT} ${config:SSH_REMOTE_TARGET} 'gdbserver :${config:GDB_PORT} ${config:PROGRAM_REMOTE_PATH}${config:PROGRAM_NAME}'",
+        "isBackground": true,
+        "hide": true,
+        "dependsOn": ["send-binary"],
+        "problemMatcher": 
+        {
+          "owner": "gdbserver",
+          "fileLocation": "relative",
+          "pattern":
+          [
+              {
+                  "regexp": "^not\\sok\\s\\d+\\s(.*)$"
+              },
+              {
+                  "regexp": "\\s+(.*)$",
+                  "message": 1
+              },
+              {
+                  "regexp": "\\s+at\\s(.*):(\\d+):(\\d+)$",
+                  "file": 1,
+                  "line": 2,
+                  "column": 3
+              }
+          ],
+          "background": 
+          {
+              "activeOnStart": true,
+              "beginsPattern": 
+              {
+                  "regexp": "Process*"
+              },
+              "endsPattern": 
+              {
+                  "regexp": "Listening on port*"
+              }
+          },
+        }
       }
     ]
   }

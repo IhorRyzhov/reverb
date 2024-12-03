@@ -5,14 +5,15 @@
     "version": "0.2.0",
     "configurations": [        
         {
-            "name": "Debug",
-            "executable": "build/reverb-debug/Reverb",
+            "name": "reverb-debug",
+            "type": "cppdbg",
             "request": "launch",
-            "runToEntryPoint": "main",
-            "servertype": "external",
-            "gdbTarget": "x.x.x.x:yyyy",
-            "type": "cortex-debug",
-            "showDevDebugOutput": "raw"
+            "program": "${workspaceFolder}/build/reverb-debug/reverb",
+            "args": [],
+            "cwd": ".",
+            "miDebuggerServerAddress": "${config:REMOTE_TARGET_ADDRESS}:${config:GDB_PORT}",
+            "miDebuggerPath": "aarch64-none-linux-gnu-gdb",
+            "preLaunchTask": "gdbserver"
         }
     ]
 }
