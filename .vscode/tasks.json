@@ -12,7 +12,7 @@
       {
         "label": "gdbserver", // https://github.com/Ed-Yang/rpidebug
         "type": "shell",
-        "command": "ssh -L ${config:GDB_PORT}:localhost:${config:GDB_PORT} ${config:SSH_REMOTE_TARGET} 'gdbserver :${config:GDB_PORT} ${config:PROGRAM_REMOTE_PATH}${config:PROGRAM_NAME}'",
+        "command": "ssh -L ${config:GDB_PORT}:localhost:${config:GDB_PORT} ${config:SSH_REMOTE_TARGET} 'sudo gdbserver :${config:GDB_PORT} ${config:PROGRAM_REMOTE_PATH}${config:PROGRAM_NAME}'",
         "isBackground": true,
         "hide": true,
         "dependsOn": ["send-binary"],

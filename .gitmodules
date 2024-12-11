@@ -1,11 +1,9 @@
-
-[submodule "src/portaudio"]
-	path = src/portaudio
-	url = git@github.com:PortAudio/portaudio.git
-
 [submodule "src/liquid-dsp"]
 	path = src/liquid-dsp
 	url = git@github.com:jgaeddert/liquid-dsp.git
 [submodule "src/libwave"]
 	path = src/libwave
 	url = git@github.com:brglng/libwave.git
+[submodule "src/miniaudio"]
+	path = src/miniaudio
+	url = git@github.com:mackron/miniaudio.git
