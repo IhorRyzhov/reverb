@@ -4,8 +4,8 @@ set(CMAKE_SYSTEM_PROCESSOR ARM)
 #set(CMAKE_C_COMPILER_WORKS 1)
 #set(CMAKE_CXX_COMPILER_WORKS 1)
 
-#set(CMAKE_C_COMPILER arm-none-linux-gnueabihf-gcc)
-#set(CMAKE_CXX_COMPILER arm-none-linux-gnueabihf-g++)
+set(CMAKE_C_COMPILER arm-none-linux-gnueabihf-gcc)
+set(CMAKE_CXX_COMPILER arm-none-linux-gnueabihf-g++)
 
 #set(CMAKE_FIND_ROOT_PATH /home/ihor/workspace/sysroot)
 #SET(CMAKE_SYSROOT /home/ihor/workspace/sysroot)

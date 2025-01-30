@@ -33,7 +33,7 @@ ExternalProject_Add(project-libwave
 	BINARY_DIR          ${CMAKE_BINARY_DIR}/../libwave
 	TMP_DIR             ${CMAKE_BINARY_DIR}/../libwave
 	STAMP_DIR           ${CMAKE_BINARY_DIR}/../libwave
-	CMAKE_ARGS			-DBUILD_SHARED_LIBS=OFF	
+	CMAKE_ARGS			-DBUILD_SHARED_LIBS=OFF	-DCMAKE_TOOLCHAIN_FILE=${CMAKE_CURRENT_SOURCE_DIR}/toolchains/arm-toolchain.cmake
     BUILD_IN_SOURCE     0
     INSTALL_COMMAND     ""
     UPDATE_COMMAND      ""
@@ -44,7 +44,7 @@ ExternalProject_Add(project-liquid-dsp
 	TMP_DIR             ${CMAKE_BINARY_DIR}/../liquid-dsp
 	STAMP_DIR           ${CMAKE_BINARY_DIR}/../liquid-dsp
 	CONFIGURE_COMMAND   ""
-	BUILD_COMMAND       "make"
+	BUILD_COMMAND       bash -c make
     BUILD_IN_SOURCE     1
     INSTALL_COMMAND     ""
     UPDATE_COMMAND      ""
@@ -52,10 +52,10 @@ ExternalProject_Add(project-liquid-dsp
 
 ExternalProject_Add_Step(project-liquid-dsp bootstrap
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/liquid-dsp
-	COMMAND ./bootstrap.sh
+	COMMAND bash ./bootstrap.sh
 )
 
 ExternalProject_Add_Step(project-liquid-dsp call-configure
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/liquid-dsp
-	COMMAND ./configure --host=x86_64-linux-gnu --target=aarch64-linux-gnu
+	COMMAND bash ./configure --host=arm-linux-gnueabihf --target=arm-linux-gnueabihf
 )

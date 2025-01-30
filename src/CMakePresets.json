@@ -16,7 +16,8 @@
                     "type": "FILEPATH",
                     "value": "toolchains/arm-toolchain.cmake"
                 }
-            }
+            },
+            "generator": "Ninja"
         }
     ],
     "buildPresets": [
