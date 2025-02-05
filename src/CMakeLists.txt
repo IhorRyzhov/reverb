@@ -10,12 +10,12 @@ add_executable(${CMAKE_PROJECT_NAME}
 )
 
 add_dependencies(${CMAKE_PROJECT_NAME}
-	project-liquid-dsp
+	#-liquid-dsp
 	project-libwave
 )
 	
 target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
-	${CMAKE_SOURCE_DIR}/liquid-dsp
+#${CMAKE_SOURCE_DIR}/liquid-dsp
 	${CMAKE_BINARY_DIR}/../libwave
 )
 
@@ -23,7 +23,7 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 	m
 	dl
 	pthread
-	libliquid.a
+	#libliquid.a
 	libwave.a
 )
 
@@ -34,28 +34,20 @@ ExternalProject_Add(project-libwave
 	TMP_DIR             ${CMAKE_BINARY_DIR}/../libwave
 	STAMP_DIR           ${CMAKE_BINARY_DIR}/../libwave
 	CMAKE_ARGS			-DBUILD_SHARED_LIBS=OFF	-DCMAKE_TOOLCHAIN_FILE=${CMAKE_CURRENT_SOURCE_DIR}/toolchains/arm-toolchain.cmake
+	PATCH_COMMAND       patch -t -p1 --forward < ../libwave.patch || true
     BUILD_IN_SOURCE     0
     INSTALL_COMMAND     ""
     UPDATE_COMMAND      ""
 )
 
-ExternalProject_Add(project-liquid-dsp
-	SOURCE_DIR          ${CMAKE_CURRENT_SOURCE_DIR}/liquid-dsp
-	TMP_DIR             ${CMAKE_BINARY_DIR}/../liquid-dsp
-	STAMP_DIR           ${CMAKE_BINARY_DIR}/../liquid-dsp
-	CONFIGURE_COMMAND   ""
-	BUILD_COMMAND       bash -c make
-    BUILD_IN_SOURCE     1
-    INSTALL_COMMAND     ""
-    UPDATE_COMMAND      ""
-)
-
-ExternalProject_Add_Step(project-liquid-dsp bootstrap
-	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/liquid-dsp
-	COMMAND bash ./bootstrap.sh
-)
-
-ExternalProject_Add_Step(project-liquid-dsp call-configure
-	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/liquid-dsp
-	COMMAND bash ./configure --host=arm-linux-gnueabihf --target=arm-linux-gnueabihf
-)
+#ExternalProject_Add(project-liquid-dsp
+#	PREFIX              ${CMAKE_CURRENT_SOURCE_DIR}/liquid-dsp
+#	SOURCE_DIR          ${CMAKE_CURRENT_SOURCE_DIR}/liquid-dsp
+#	BINARY_DIR          ${CMAKE_BINARY_DIR}/../liquid-dsp
+#	TMP_DIR             ${CMAKE_BINARY_DIR}/../liquid-dsp
+#	STAMP_DIR           ${CMAKE_BINARY_DIR}/../liquid-dsp
+#	CMAKE_ARGS			-DCMAKE_TOOLCHAIN_FILE=${CMAKE_CURRENT_SOURCE_DIR}/toolchains/arm-toolchain.cmake
+#    BUILD_IN_SOURCE     0
+#    INSTALL_COMMAND     ""
+#    UPDATE_COMMAND      ""
+#)
