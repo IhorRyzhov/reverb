@@ -1,0 +1,31 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index fad0497f..ef93965b 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -6,6 +6,8 @@ execute_process(COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/version.sh
+     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+     OUTPUT_VARIABLE LIQUID_VERSION)
+ 
++SET(LIQUID_VERSION 1.7.0)
++
+ # project definition
+ project(liquid VERSION ${LIQUID_VERSION} LANGUAGES C CXX)
+ 
+@@ -43,7 +45,7 @@ include (CheckLibraryExists)
+ include (CheckSymbolExists)
+ 
+ # check for hardware acceleration
+-include(cmake/FindSIMD.cmake)
++#include(cmake/FindSIMD.cmake)
+ # TODO: check for FFTW
+ 
+ # global flags
+@@ -321,7 +323,7 @@ endif()
+ # necessary to include this for the generated "config.h" header
+ include_directories(${CMAKE_CURRENT_BINARY_DIR})
+ 
+-add_library(${LIBNAME} SHARED
++add_library(${LIBNAME} STATIC #SHARED
+     src/libliquid.c
+     $<TARGET_OBJECTS:agc>
+     $<TARGET_OBJECTS:audio>
