@@ -12,7 +12,7 @@
             "args": [],
             "cwd": ".",
             "miDebuggerServerAddress": "${config:REMOTE_TARGET_ADDRESS}:${config:GDB_PORT}",
-            "miDebuggerPath": "aarch64-linux-gnu-gdb",
+            "miDebuggerPath": "arm-none-linux-gnueabihf-gdb",
             "preLaunchTask": "gdbserver"
         }
     ]
