@@ -12,13 +12,13 @@ add_executable(${CMAKE_PROJECT_NAME}
 add_dependencies(${CMAKE_PROJECT_NAME}
 	project-liquid-dsp
 	project-libwave
-	project-libsoundio
+	project-portaudio
 )
 	
 target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 	${CMAKE_BINARY_DIR}/../liquid-dsp
 	${CMAKE_BINARY_DIR}/../libwave
-	${CMAKE_BINARY_DIR}/../libsoundio
+	${CMAKE_BINARY_DIR}/../portaudio
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME}
@@ -28,7 +28,7 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 	libliquid.a
 	libwave.a
 	${CMAKE_SOURCE_DIR}/../platform/orangepi/libasound.so
-	libsoundio.a
+	libportaudio.a
 )
 
 ExternalProject_Add(project-libwave
@@ -58,18 +58,13 @@ ExternalProject_Add(project-liquid-dsp
     UPDATE_COMMAND      ""
 )
 
-ExternalProject_Add(project-libsoundio
-    PREFIX              ${CMAKE_SOURCE_DIR}/libsoundio
-	SOURCE_DIR          ${CMAKE_SOURCE_DIR}/libsoundio
-	BINARY_DIR          ${CMAKE_BINARY_DIR}/../libsoundio
-	TMP_DIR             ${CMAKE_BINARY_DIR}/../libsoundio
-	STAMP_DIR           ${CMAKE_BINARY_DIR}/../libsoundio
+ExternalProject_Add(project-portaudio
+    PREFIX              ${CMAKE_SOURCE_DIR}/portaudio
+	SOURCE_DIR          ${CMAKE_SOURCE_DIR}/portaudio
+	BINARY_DIR          ${CMAKE_BINARY_DIR}/../portaudio
+	TMP_DIR             ${CMAKE_BINARY_DIR}/../portaudio
+	STAMP_DIR           ${CMAKE_BINARY_DIR}/../portaudio
 	CMAKE_ARGS			-DCMAKE_TOOLCHAIN_FILE=${CMAKE_SOURCE_DIR}/toolchains/arm-toolchain.cmake
-	                    -DBUILD_DYNAMIC_LIBS=OFF
-						-DENABLE_JACK=OFF
-						-DENABLE_PULSEAUDIO=OFF
-						-DENABLE_COREAUDIO=OFF
-						-DENABLE_WASAPI=OFF
 	                    -DALSA_INCLUDE_DIR=${CMAKE_SOURCE_DIR}/../platform/orangepi/alsa
 						-DALSA_LIBRARY=${CMAKE_SOURCE_DIR}/../platform/orangepi/libasound.so
 						-DCMAKE_C_STANDARD_INCLUDE_DIRECTORIES=${CMAKE_SOURCE_DIR}/../platform/orangepi

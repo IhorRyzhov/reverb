@@ -1,10 +1,11 @@
 [submodule "src/liquid-dsp"]
 	path = src/liquid-dsp
 	url = git@github.com:jgaeddert/liquid-dsp.git
+
 [submodule "src/libwave"]
 	path = src/libwave
 	url = git@github.com:brglng/libwave.git
 
-[submodule "src/libsoundio"]
-	path = src/libsoundio
-	url = git@github.com:andrewrk/libsoundio.git
+[submodule "src/portaudio"]
+	path = src/portaudio
+	url = git@github.com:PortAudio/portaudio.git

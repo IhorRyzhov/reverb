@@ -1,38 +1,87 @@
 #include "io-audio.h"
 #include "../libwave/include/wave.h"
-#include "../libsoundio/soundio/soundio.h"
+#include "../portaudio/include/portaudio.h"
+#include <stdio.h>
+#include <string.h>
+#include <pthread.h>
+#include <unistd.h>
+#include <stdint.h>
+#include <semaphore.h>
+#include <stdbool.h>
 
 #define SAMPLE_RATE 44100
+#define BUFFER_SIZE 256
 
 static WaveFile* objP_file = NULL;
 static WaveFile* objP_fileCapture = NULL;
 
-//wave_write(objP_fileCapture, pL_input, u32L_frameCount);
-//wave_read(objP_file, pL_framesOut, u64L_frameCount);   
+static PaStream* objP_stream = NULL;
+static PaError s32_err;
 
-static void write_callback(struct SoundIoOutStream *outstream, int frame_count_min, int frame_count_max) 
+static uint8_t u8_exit = 0;
+
+static sem_t semaphoreBuffersReady;
+
+static int8_t u8P_bufferOutput[BUFFER_SIZE * 4];
+static int8_t u8P_bufferInput[BUFFER_SIZE * 4];
+
+static int callback(
+    const void *input, void *output,
+    unsigned long frameCount,
+    const PaStreamCallbackTimeInfo* timeInfo,
+    PaStreamCallbackFlags statusFlags,
+    void *userData )
 {
-    double float_sample_rate = outstream->sample_rate;
-    struct SoundIoChannelArea *areas;
-    int err;
-    int s32L_framesToWrite = frame_count_max;
+	memcpy(output, u8P_bufferOutput, BUFFER_SIZE * 4);	
+	memcpy(u8P_bufferInput, input, BUFFER_SIZE * 4);
 
-    err = soundio_outstream_begin_write(outstream, &areas, &s32L_framesToWrite);
+	sem_post(&semaphoreBuffersReady);
 
-    wave_read(objP_file, areas->ptr, frame_count_max);
-    areas->step = 2;
+	if (statusFlags & paInputUnderflow)
+	{
+		printf("paInputUnderflow\n");
+	}
 
-    err = soundio_outstream_end_write(outstream);
+	if (statusFlags & paInputOverflow)
+	{
+		printf("paInputOverflow\n");
+	}
+
+	if (statusFlags & paOutputUnderflow)
+	{
+		printf("paOutputUnderflow\n");
+	}
+
+	if (statusFlags & paOutputOverflow)
+	{
+		printf("paOutputOverflow\n");
+	}
+
+	if (statusFlags & paPrimingOutput)
+	{
+		printf("paPrimingOutput\n");
+	}
+
+	return paContinue;
 }
 
-static struct SoundIo *soundio;
-static struct SoundIoDevice *device;
-static struct SoundIoOutStream *outstream;
+static void* processData(void* param)
+{
+	while (0 == u8_exit)
+	{
+		sem_wait(&semaphoreBuffersReady);
+
+		wave_read(objP_file, u8P_bufferOutput, BUFFER_SIZE);
+		wave_write(objP_fileCapture, u8P_bufferInput, BUFFER_SIZE);
+	}
+
+	return NULL;
+}
 
 void ioAudio_init(void)
 {
 	const WaveErr* objPL_err = wave_err();
-	objP_file = wave_open("tel.wav", WAVE_OPEN_READ);	
+	objP_file = wave_open("sed.wav", WAVE_OPEN_READ);	
 	WaveU16 u16L_format = wave_get_format(objP_file);
  	WaveU16 u16L_channnelsQuantity = wave_get_num_channels(objP_file);
  	WaveU32 u16L_sampleRate = wave_get_sample_rate(objP_file);
@@ -46,43 +95,53 @@ void ioAudio_init(void)
     wave_set_valid_bits_per_sample(objP_fileCapture, 16);
     wave_set_sample_size(objP_fileCapture, 2);
 
-    soundio = soundio_create();
-  
-    int err = soundio_connect_backend(soundio, SoundIoBackendAlsa);
+	sem_init(&semaphoreBuffersReady, 0, 0);
 
-    soundio_flush_events(soundio);
+	pthread_t thread;
+	pthread_create(&thread, NULL, processData, NULL);
 
-    int selected_device_index = soundio_default_output_device_index(soundio);
+	s32_err = Pa_Initialize();
 
-    device = soundio_get_output_device(soundio, selected_device_index);
+	PaStreamParameters outputParameters;
+	PaStreamParameters inputParameters;
+	
+	outputParameters.device = Pa_GetDefaultOutputDevice();
+	inputParameters.device = Pa_GetDefaultInputDevice();
 
-    outstream = soundio_outstream_create(device);
+	const PaDeviceInfo* outputDeviceInfo = Pa_GetDeviceInfo(outputParameters.device);
+	const PaDeviceInfo* inputDeviceInfo = Pa_GetDeviceInfo(inputParameters.device);
 
+	outputParameters.channelCount = 2;
+	outputParameters.sampleFormat = paInt16;
+	outputParameters.suggestedLatency = 0.01;//outputDeviceInfo->defaultLowOutputLatency;
+	outputParameters.hostApiSpecificStreamInfo = NULL;
 
-    outstream->write_callback = write_callback;
-    outstream->underflow_callback = NULL;
-    outstream->software_latency = 0.1;
-    outstream->sample_rate = SAMPLE_RATE;
-    
-    if (soundio_device_supports_format(device, SoundIoFormatS16NE)) 
-    {
-        outstream->format = SoundIoFormatS16NE;
-    }
+	inputParameters.channelCount = 2;
+	inputParameters.sampleFormat = paInt16;
+	inputParameters.suggestedLatency = 0.01;//inputDeviceInfo->defaultLowInputLatency;
+	inputParameters.hostApiSpecificStreamInfo = NULL;
 
-    err = soundio_outstream_open(outstream);
+	s32_err = Pa_OpenStream(
+		&objP_stream,
+		&inputParameters,
+		&outputParameters,
+		SAMPLE_RATE,
+		BUFFER_SIZE,
+		paNoFlag,
+		callback,
+		NULL);
 
-    err = soundio_outstream_start(outstream);
-
-
+    s32_err = Pa_StartStream(objP_stream);
 }
 
 void ioAudio_deinit(void)
 {
-    soundio_outstream_destroy(outstream);
-    soundio_device_unref(device);
-    soundio_destroy(soundio);
+	u8_exit = 1;
+
+    s32_err = Pa_StopStream(objP_stream);
+    s32_err = Pa_CloseStream(objP_stream);
+	Pa_Terminate();
 
     wave_close(objP_fileCapture);
-
     wave_close(objP_file);
 }
