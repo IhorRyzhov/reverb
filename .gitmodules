@@ -4,6 +4,7 @@
 [submodule "src/libwave"]
 	path = src/libwave
 	url = git@github.com:brglng/libwave.git
-[submodule "src/miniaudio"]
-	path = src/miniaudio
-	url = git@github.com:mackron/miniaudio.git
+
+[submodule "src/libsoundio"]
+	path = src/libsoundio
+	url = git@github.com:andrewrk/libsoundio.git

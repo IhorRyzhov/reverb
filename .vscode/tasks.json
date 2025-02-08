@@ -5,9 +5,16 @@
     "tasks": 
     [
       {
-        "label": "send-binary",
+        "label": "send-file",
         "type": "shell",
         "command": "scp build/reverb-debug/reverb ${config:SSH_REMOTE_TARGET}:${config:PROGRAM_REMOTE_PATH}",
+        "options": {"statusbar": {"hide": true}}
+      },
+      {
+        "label": "send-binary",
+        "type": "shell",
+        "command": "ssh ${config:SSH_REMOTE_TARGET} chmod 777 ${config:PROGRAM_REMOTE_PATH}/${config:PROGRAM_NAME}",
+        "dependsOn": ["send-file"],
       },
       {
         "label": "gdbserver", // https://github.com/Ed-Yang/rpidebug
@@ -15,7 +22,7 @@
         "command": "ssh -L ${config:GDB_PORT}:localhost:${config:GDB_PORT} ${config:SSH_REMOTE_TARGET} 'gdbserver :${config:GDB_PORT} ${config:PROGRAM_REMOTE_PATH}${config:PROGRAM_NAME}'",
         "isBackground": true,
         "hide": true,
-        "dependsOn": ["send-binary"],
+        //"dependsOn": ["send-binary"],
         "problemMatcher": 
         {
           "owner": "gdbserver",

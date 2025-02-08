@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 
 include(ExternalProject)
 
-project(reverb)
+project(reverb C)
 
 add_executable(${CMAKE_PROJECT_NAME}
 	main.c
@@ -12,11 +12,13 @@ add_executable(${CMAKE_PROJECT_NAME}
 add_dependencies(${CMAKE_PROJECT_NAME}
 	project-liquid-dsp
 	project-libwave
+	project-libsoundio
 )
 	
 target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 	${CMAKE_BINARY_DIR}/../liquid-dsp
 	${CMAKE_BINARY_DIR}/../libwave
+	${CMAKE_BINARY_DIR}/../libsoundio
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME}
@@ -25,6 +27,8 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 	pthread
 	libliquid.a
 	libwave.a
+	${CMAKE_SOURCE_DIR}/../platform/orangepi/libasound.so
+	libsoundio.a
 )
 
 ExternalProject_Add(project-libwave
@@ -49,6 +53,26 @@ ExternalProject_Add(project-liquid-dsp
 	CMAKE_ARGS          -DCMAKE_TOOLCHAIN_FILE=${CMAKE_SOURCE_DIR}/toolchains/arm-toolchain.cmake
 	                    -DCOVERAGE=OFF -DBUILD_EXAMPLES=OFF -DBUILD_AUTOTESTS=OFF -DBUILD_BENCHMARKS=OFF 
 	PATCH_COMMAND       patch -t -p1 --forward < ${CMAKE_SOURCE_DIR}/libliquid.patch || true
+    BUILD_IN_SOURCE     0
+    INSTALL_COMMAND     ""
+    UPDATE_COMMAND      ""
+)
+
+ExternalProject_Add(project-libsoundio
+    PREFIX              ${CMAKE_SOURCE_DIR}/libsoundio
+	SOURCE_DIR          ${CMAKE_SOURCE_DIR}/libsoundio
+	BINARY_DIR          ${CMAKE_BINARY_DIR}/../libsoundio
+	TMP_DIR             ${CMAKE_BINARY_DIR}/../libsoundio
+	STAMP_DIR           ${CMAKE_BINARY_DIR}/../libsoundio
+	CMAKE_ARGS			-DCMAKE_TOOLCHAIN_FILE=${CMAKE_SOURCE_DIR}/toolchains/arm-toolchain.cmake
+	                    -DBUILD_DYNAMIC_LIBS=OFF
+						-DENABLE_JACK=OFF
+						-DENABLE_PULSEAUDIO=OFF
+						-DENABLE_COREAUDIO=OFF
+						-DENABLE_WASAPI=OFF
+	                    -DALSA_INCLUDE_DIR=${CMAKE_SOURCE_DIR}/../platform/orangepi/alsa
+						-DALSA_LIBRARY=${CMAKE_SOURCE_DIR}/../platform/orangepi/libasound.so
+						-DCMAKE_C_STANDARD_INCLUDE_DIRECTORIES=${CMAKE_SOURCE_DIR}/../platform/orangepi
     BUILD_IN_SOURCE     0
     INSTALL_COMMAND     ""
     UPDATE_COMMAND      ""
