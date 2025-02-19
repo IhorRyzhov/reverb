@@ -35,5 +35,11 @@
             "hidden": false,
             "configurePreset": "reverb-orangepi"
         }
+    ],
+    "testPresets": [
+        {
+            "name": "test-reverb",
+            "configurePreset": "reverb-wsl"
+        }
     ]
 }

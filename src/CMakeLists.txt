@@ -2,11 +2,14 @@ cmake_minimum_required(VERSION 3.15)
 
 include(ExternalProject)
 
-project(reverb C)
+project(reverb C CXX)
+
+add_compile_options(-Wno-deprecated -Wno-deprecated-declarations)
 
 add_executable(${CMAKE_PROJECT_NAME}
 	main.c
 	io-audio/io-audio.c
+	reverb/upolsconv.cpp
 )
 
 add_dependencies(${CMAKE_PROJECT_NAME}
@@ -39,7 +42,7 @@ ExternalProject_Add(project-libwave
 	TMP_DIR             ${CMAKE_BINARY_DIR}/../libwave
 	STAMP_DIR           ${CMAKE_BINARY_DIR}/../libwave
 	CMAKE_ARGS			-DBUILD_SHARED_LIBS=OFF	#-DCMAKE_TOOLCHAIN_FILE=${CMAKE_SOURCE_DIR}/toolchains/arm-toolchain.cmake
-	PATCH_COMMAND       patch -t -p1 --forward < ${CMAKE_SOURCE_DIR}/libwave.patch || true
+	PATCH_COMMAND       patch --reject-file=${CMAKE_BINARY_DIR}/../libwave/reject -t -p1 --forward < ${CMAKE_SOURCE_DIR}/libwave.patch || true
     BUILD_IN_SOURCE     0
     INSTALL_COMMAND     ""
     UPDATE_COMMAND      ""
@@ -53,7 +56,7 @@ ExternalProject_Add(project-liquid-dsp
 	STAMP_DIR           ${CMAKE_BINARY_DIR}/../liquid-dsp
 	CMAKE_ARGS          #-DCMAKE_TOOLCHAIN_FILE=${CMAKE_SOURCE_DIR}/toolchains/arm-toolchain.cmake
 	                    -DCOVERAGE=OFF -DBUILD_EXAMPLES=OFF -DBUILD_AUTOTESTS=OFF -DBUILD_BENCHMARKS=OFF 
-	PATCH_COMMAND       patch -t -p1 --forward < ${CMAKE_SOURCE_DIR}/libliquid.patch || true
+	PATCH_COMMAND       patch --reject-file=${CMAKE_BINARY_DIR}/../liquid-dsp/reject -t -p1 --forward < ${CMAKE_SOURCE_DIR}/libliquid.patch || true
     BUILD_IN_SOURCE     0
     INSTALL_COMMAND     ""
     UPDATE_COMMAND      ""
@@ -72,4 +75,30 @@ ExternalProject_Add(project-portaudio
     BUILD_IN_SOURCE     0
     INSTALL_COMMAND     ""
     UPDATE_COMMAND      ""
+)
+
+include(CTest)
+
+add_executable(reverb-tests
+	tests/tests.cpp
+	reverb/upolsconv.cpp
+)
+
+add_dependencies(reverb-tests
+	project-liquid-dsp
+)
+
+target_link_directories(reverb-tests PRIVATE
+	${CMAKE_BINARY_DIR}/../liquid-dsp
+)
+
+target_link_libraries(reverb-tests
+	libliquid.a
+)
+
+enable_testing()
+
+add_test(
+  NAME reverb-tests
+  COMMAND ${CMAKE_BINARY_DIR}/reverb-tests
 )
