@@ -9,3 +9,6 @@
 [submodule "src/portaudio"]
 	path = src/portaudio
 	url = git@github.com:PortAudio/portaudio.git
+[submodule "src/tests/minunit"]
+	path = src/tests/minunit
+	url = git@github.com:siu/minunit.git
