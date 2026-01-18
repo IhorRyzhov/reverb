@@ -7,25 +7,33 @@
     },
     "configurePresets": [
         {
-            "name": "reverb-debug",
-            "hidden": false,
+            "name": "base",
+            "hidden": true,
+            "generator": "Ninja",
             "binaryDir": "../build/${presetName}",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "CMAKE_TOOLCHAIN_FILE": {
-                    "type": "FILEPATH",
-                    "value": "toolchains/arm-toolchain.cmake"
-                }
-            },
-            "generator": "Ninja"
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "reverb-wsl",
+            "inherits": "base"
+        },
+        {
+            "name": "reverb-orangepi",
+            "inherits": "base"
         }
     ],
     "buildPresets": [
         {
-            "name": "build-reverb-debug",
+            "name": "build-reverb-wsl",
             "hidden": false,
-            "configurePreset": "reverb-debug",
-            "displayName": "build-reverb-debug"
+            "configurePreset": "reverb-wsl"
+        },
+        {
+            "name": "build-reverb-orangepi",
+            "hidden": false,
+            "configurePreset": "reverb-orangepi"
         }
     ]
 }

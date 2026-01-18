@@ -14,6 +14,16 @@
             "miDebuggerServerAddress": "${config:REMOTE_TARGET_ADDRESS}:${config:GDB_PORT}",
             "miDebuggerPath": "arm-none-linux-gnueabihf-gdb",
             "preLaunchTask": "gdbserver"
+        },
+        {
+            "name": "reverb-debug-host",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/reverb-wsl/reverb",
+            "args": [],
+            "cwd": ".",
+            "miDebuggerPath": "gdb"
         }
+
     ]
 }
